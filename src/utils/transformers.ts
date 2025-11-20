@@ -175,7 +175,7 @@ export function transformTransportationMode(externalMode: string): Transportatio
     subtype,
     emissionFactor,
     accessibilityFeatures: getDefaultAccessibilityFeatures(type),
-    availability: 'available' as AvailabilityStatus
+    availability: { available: true }
   };
 }
 

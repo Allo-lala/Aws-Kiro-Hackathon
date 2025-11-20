@@ -51,7 +51,7 @@ export const userPreferencesArbitrary = fc.record({
     availability: availabilityStatusArbitrary
   }), { minLength: 1, maxLength: 5 }),
   accessibilityNeeds: fc.array(fc.record({
-    type: fc.string(),
+    type: fc.constantFrom('wheelchair_accessible', 'visual_impairment', 'hearing_impairment'),
     required: fc.boolean(),
     description: fc.option(fc.string(), { nil: undefined })
   })),

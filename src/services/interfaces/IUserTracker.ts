@@ -44,4 +44,15 @@ export interface IUserTracker {
     userId: string, 
     needs: AccessibilityRequirement[]
   ): Promise<void>;
+
+  /**
+   * Get trip history for a user within a timeframe
+   * @param userId User identifier
+   * @param timeframe Time period to filter trips
+   * @returns Array of trip records
+   */
+  getTripHistory(
+    userId: string,
+    timeframe: { start: Date; end: Date }
+  ): Promise<TripRecord[]>;
 }

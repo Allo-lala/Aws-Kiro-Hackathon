@@ -53,7 +53,7 @@ describe('Transportation Mode Transformation', () => {
     const result = transformTransportationMode('walking');
     expect(result.type).toBe('walking');
     expect(result.emissionFactor).toBe(0);
-    expect(result.availability).toBe('available');
+    expect(result.availability.available).toBe(true);
   });
 
   it('should transform cycling mode', () => {

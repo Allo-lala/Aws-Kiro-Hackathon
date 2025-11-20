@@ -3,3 +3,4 @@ export * from './IRoutePlanner';
 export * from './ICarbonCalculator';
 export * from './IUserTracker';
 export * from './IRealtimeUpdater';
+export * from './IDataExportService';

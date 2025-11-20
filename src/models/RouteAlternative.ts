@@ -24,4 +24,5 @@ export interface RouteAlternative {
   ecoScore: number;
   accessibilityCompliant: boolean;
   cost?: number;
+  metadata?: Record<string, any>;
 }

@@ -117,7 +117,7 @@ describe('Transportation Mode Validation', () => {
       type: 'walking',
       emissionFactor: 0,
       accessibilityFeatures: [],
-      availability: 'available'
+      availability: { available: true }
     };
 
     const result = validateTransportationMode(mode);
@@ -130,7 +130,7 @@ describe('Transportation Mode Validation', () => {
       type: 'invalid' as any,
       emissionFactor: 0,
       accessibilityFeatures: [],
-      availability: 'available'
+      availability: { available: true }
     };
 
     const result = validateTransportationMode(mode);
@@ -143,7 +143,7 @@ describe('Transportation Mode Validation', () => {
       type: 'walking',
       emissionFactor: -1,
       accessibilityFeatures: [],
-      availability: 'available'
+      availability: { available: true }
     };
 
     const result = validateTransportationMode(mode);

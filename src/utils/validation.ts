@@ -143,9 +143,10 @@ export function validateTransportationMode(mode: TransportationMode): {
   }
 
   // Validate availability
-  const validAvailability = ['available', 'limited', 'unavailable'];
-  if (!validAvailability.includes(mode.availability)) {
-    errors.push(`Availability must be one of: ${validAvailability.join(', ')}`);
+  if (!mode.availability || typeof mode.availability !== 'object') {
+    errors.push('Availability must be an object with available property');
+  } else if (typeof mode.availability.available !== 'boolean') {
+    errors.push('Availability.available must be a boolean');
   }
 
   return {
