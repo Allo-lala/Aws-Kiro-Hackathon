@@ -136,5 +136,5 @@
   - Optimize performance and fix any integration issues
   - _Requirements: All requirements_
 
-- [-] 13. Checkpoint - Ensure all tests pass
+- [ ] 13. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.

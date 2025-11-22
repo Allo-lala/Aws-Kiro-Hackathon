@@ -1,0 +1,43 @@
+{
+  "name": "rutty-frontend",
+  "version": "1.0.0",
+  "description": "Rutty Frontend - Eco-friendly route planning web application",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development",
+    "serve": "node src/simple-server.js",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.{ts,css,html}"
+  },
+  "keywords": [
+    "eco-friendly",
+    "route-planning",
+    "frontend",
+    "web-app"
+  ],
+  "author": "Rutty Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "css-loader": "^6.8.1",
+    "eslint": "^8.0.0",
+    "html-webpack-plugin": "^5.5.3",
+    "prettier": "^3.0.0",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "jsdom": "^22.1.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
