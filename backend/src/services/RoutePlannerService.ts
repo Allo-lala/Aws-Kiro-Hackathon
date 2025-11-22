@@ -10,6 +10,9 @@ import { EcoRankingService, RankingCriteria } from './EcoRankingService';
 import { AccessibilityFilterService, AccessibilityFilterOptions } from './AccessibilityFilterService';
 import { ExternalServiceManager } from '../gateway/ExternalServiceManager';
 import { ApiGateway } from '../gateway/ApiGateway';
+import { RealRouteCalculationService, RealRouteCalculationConfig } from './RealRouteCalculationService';
+import { ExternalRouteResponse } from './ExternalRouteAPIClient';
+import { config } from '../config';
 
 interface ExternalRouteAPI {
   calculateRoute(origin: Location, destination: Location, mode: TransportationType): Promise<ExternalRouteResult>;
@@ -111,6 +114,7 @@ export class RoutePlannerService implements IRoutePlanner {
   private ecoRankingService: EcoRankingService;
   private accessibilityService: AccessibilityFilterService;
   private externalServiceManager?: ExternalServiceManager;
+  private realRouteService?: RealRouteCalculationService;
 
   constructor(externalAPI?: ExternalRouteAPI, gateway?: ApiGateway) {
     this.externalAPI = externalAPI || new MockExternalAPI();
@@ -120,6 +124,27 @@ export class RoutePlannerService implements IRoutePlanner {
     // Initialize external service manager if gateway is provided
     if (gateway) {
       this.externalServiceManager = new ExternalServiceManager(gateway);
+    }
+
+    // Initialize real route calculation service if API key is configured and valid
+    // Don't initialize if the key is a placeholder value
+    const hasValidApiKey = config.routeApi.apiKey && 
+                          !config.routeApi.apiKey.includes('your-') && 
+                          !config.routeApi.apiKey.includes('-key-here');
+    
+    if (hasValidApiKey) {
+      const realRouteConfig: RealRouteCalculationConfig = {
+        provider: config.routeApi.provider,
+        apiKey: config.routeApi.apiKey,
+        enableCache: config.routeApi.cacheEnabled,
+        cacheTTLMinutes: config.routeApi.cacheTTLMinutes,
+        timeout: config.routeApi.timeout,
+        maxRetries: config.routeApi.maxRetries
+      };
+      this.realRouteService = new RealRouteCalculationService(realRouteConfig);
+      console.log(`Real route calculation service initialized with provider: ${config.routeApi.provider}`);
+    } else {
+      console.warn('No valid route API key configured. Using mock route calculation.');
     }
   }
 
@@ -462,6 +487,11 @@ export class RoutePlannerService implements IRoutePlanner {
     destination: Location,
     filteredModes: TransportationMode[]
   ): Promise<RouteAlternative[]> {
+    // Use real route service if available, otherwise fall back to mock API
+    if (this.realRouteService) {
+      return this.calculateRoutesWithRealAPI(origin, destination, filteredModes);
+    }
+
     // Calculate routes for each transportation mode using mock API
     const routePromises = filteredModes.map(async (mode) => {
       try {
@@ -484,6 +514,130 @@ export class RoutePlannerService implements IRoutePlanner {
     });
 
     return (await Promise.all(routePromises)).filter(route => route !== null) as RouteAlternative[];
+  }
+
+  private async calculateRoutesWithRealAPI(
+    origin: Location,
+    destination: Location,
+    filteredModes: TransportationMode[]
+  ): Promise<RouteAlternative[]> {
+    if (!this.realRouteService) {
+      throw new Error('Real route service not initialized');
+    }
+
+    const modeTypes = filteredModes.map(m => m.type);
+    
+    try {
+      // Calculate routes for all modes in parallel
+      const routeResults = await this.realRouteService.calculateMultiModeRoutes(
+        origin,
+        destination,
+        modeTypes
+      );
+
+      // Transform results to RouteAlternative format
+      const routes: RouteAlternative[] = [];
+      
+      for (const mode of filteredModes) {
+        const externalResult = routeResults.get(mode.type);
+        if (externalResult) {
+          const route = this.createRouteAlternativeFromRealAPI(
+            origin,
+            destination,
+            mode,
+            externalResult
+          );
+          routes.push(route);
+        }
+      }
+
+      return routes;
+    } catch (error) {
+      console.error('Real route API failed, falling back to mock:', error);
+      
+      // Try to use cached routes if available
+      const cachedRoutes: RouteAlternative[] = [];
+      for (const mode of filteredModes) {
+        const cached = this.realRouteService.getCachedRoute(origin, destination, mode.type);
+        if (cached) {
+          const route = this.createRouteAlternativeFromRealAPI(origin, destination, mode, cached);
+          cachedRoutes.push(route);
+        }
+      }
+
+      if (cachedRoutes.length > 0) {
+        console.log(`Using ${cachedRoutes.length} cached routes`);
+        return cachedRoutes;
+      }
+
+      // If no cached routes available, throw error
+      throw new Error('Route API is unavailable and no cached routes found. Please try again later.');
+    }
+  }
+
+  private createRouteAlternativeFromRealAPI(
+    origin: Location,
+    destination: Location,
+    mode: TransportationMode,
+    externalResult: ExternalRouteResponse
+  ): RouteAlternative {
+    const segments: RouteSegment[] = externalResult.segments.map((seg, index) => ({
+      id: `segment-${index}`,
+      startLocation: {
+        latitude: seg.startLat,
+        longitude: seg.startLng
+      },
+      endLocation: {
+        latitude: seg.endLat,
+        longitude: seg.endLng
+      },
+      transportationMode: mode,
+      distance: seg.distance,
+      estimatedTime: seg.duration,
+      instructions: seg.instructions
+    }));
+
+    const carbonFootprint: CarbonFootprint = {
+      totalEmissions: externalResult.distance * mode.emissionFactor,
+      emissionsBySegment: segments.map(seg => ({
+        segmentId: seg.id,
+        distance: seg.distance,
+        transportationMode: mode.type,
+        emissions: seg.distance * mode.emissionFactor
+      })),
+      methodology: 'EPA emission factors per mile',
+      dataSources: ['EPA eGRID', 'IPCC Guidelines'],
+      calculationTimestamp: new Date()
+    };
+
+    // Create temporary route for eco-score calculation
+    const tempRoute: RouteAlternative = {
+      id: `temp-route-${mode.type}-${Date.now()}`,
+      origin,
+      destination,
+      transportationModes: [mode],
+      segments,
+      totalDistance: externalResult.distance,
+      estimatedTime: externalResult.duration,
+      carbonFootprint,
+      ecoScore: 0,
+      accessibilityCompliant: mode.accessibilityFeatures.some(f => f.supported),
+      cost: this.estimateCost(mode.type, externalResult.distance),
+      metadata: {
+        provider: externalResult.provider,
+        polyline: externalResult.polyline
+      }
+    };
+
+    // Calculate eco-score using EcoRankingService
+    const ecoScoreBreakdown = this.ecoRankingService.calculateEcoScore(tempRoute);
+    const ecoScore = ecoScoreBreakdown.finalScore;
+
+    return {
+      ...tempRoute,
+      id: `route-${mode.type}-${Date.now()}`,
+      ecoScore
+    };
   }
 
   private estimateCost(type: TransportationType, distance: number): number | undefined {

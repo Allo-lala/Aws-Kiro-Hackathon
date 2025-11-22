@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eco-route-planner
+  labels:
+    name: eco-route-planner
+    environment: production

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eco-route-config
+  namespace: eco-route-planner
+data:
+  db-name: "eco_route_planner"
+  db-user: "postgres"
+  jwt-expires-in: "24h"
+  email-service: "sendgrid"
+  email-from: "noreply@ecorouteplanner.com"
+  rate-limit-window-ms: "900000"
+  rate-limit-max-requests: "100"
+  log-level: "info"

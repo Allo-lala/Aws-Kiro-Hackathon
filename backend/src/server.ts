@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { RuttyApplication } from './index';
 import { RouteController } from './api/RouteController';
-import { UserController } from './api/UserController';
+import UserController from './api/UserController';
 import { CarbonController } from './api/CarbonController';
 import { RealtimeController } from './api/RealtimeController';
 import { DataExportController } from './api/DataExportController';
@@ -32,7 +32,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Initialize controllers
 const routeController = new RouteController(ruttyApp.getRoutePlanner());
-const userController = new UserController(ruttyApp.getUserTracker());
+// const userController = new UserController(ruttyApp.getUserTracker());
 const carbonController = new CarbonController(ruttyApp.getCarbonCalculator());
 const realtimeController = new RealtimeController(ruttyApp.getRealtimeUpdater());
 const dataExportController = new DataExportController();

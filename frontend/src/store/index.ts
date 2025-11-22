@@ -1,4 +1,4 @@
 // State Management exports
 // Redux/Context API state management will be added here
 
-export {};
+export { AuthProvider, useAuth } from './AuthContext';

@@ -84,6 +84,32 @@ npm run test:pbt           # Run property-based tests only
 npm run dev                # Run in development mode
 ```
 
+## Deployment
+
+### Quick Start
+
+```bash
+# Configure environment
+cp .env.example .env
+# Edit .env with your configuration
+
+# Deploy with Docker
+./scripts/deploy.sh dev     # Development
+./scripts/deploy.sh prod    # Production
+```
+
+### Documentation
+
+- **[Quick Start Guide](DEPLOYMENT_QUICK_START.md)** - Get up and running in minutes
+- **[Full Deployment Guide](DEPLOYMENT_GUIDE.md)** - Comprehensive deployment documentation
+- **[Backup Scripts](scripts/backup/README.md)** - Database backup and restore procedures
+
+### Health Checks
+
+- Backend: `http://localhost:3000/health`
+- Backend Readiness: `http://localhost:3000/ready`
+- Frontend: `http://localhost:8080/health`
+
 ## Testing Framework
 
 The project uses Vitest for unit testing and fast-check for property-based testing. Property-based tests validate universal properties across randomly generated inputs to ensure correctness at scale.

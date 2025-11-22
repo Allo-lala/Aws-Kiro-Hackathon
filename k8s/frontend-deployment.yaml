@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eco-route-frontend
+  namespace: eco-route-planner
+  labels:
+    app: eco-route-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eco-route-frontend
+  template:
+    metadata:
+      labels:
+        app: eco-route-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: your-registry.com/eco-route-frontend:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eco-route-frontend
+  namespace: eco-route-planner
+spec:
+  selector:
+    app: eco-route-frontend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

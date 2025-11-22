@@ -215,9 +215,10 @@ describe('EcoRankingService Property Tests', () => {
           }
           
           // Zero-emission routes should have reasonable eco-scores
+          // Use strict definition: ALL modes must be zero-emission OR total emissions === 0
           const zeroEmissionRoutes = rankedRoutes.filter(route => 
-            route.carbonFootprint.totalEmissions <= 0.001 || 
-            route.transportationModes.some(mode => mode.type === 'walking' || mode.type === 'cycling')
+            route.carbonFootprint.totalEmissions === 0 || 
+            route.transportationModes.every(mode => mode.emissionFactor === 0)
           );
           
           if (zeroEmissionRoutes.length > 0) {

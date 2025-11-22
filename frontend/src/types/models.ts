@@ -75,3 +75,64 @@ export interface SustainabilityMetrics {
   }>;
   [key: string]: any; // Allow additional properties
 }
+
+// Admin-specific types
+export interface SystemMetrics {
+  activeUsers: number;
+  totalUsers: number;
+  apiCallsToday: number;
+  apiQuotaRemaining: number;
+  errorRate: number;
+  averageResponseTime: number;
+  databaseConnections: number;
+  cacheHitRate: number;
+  timestamp: Date;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  isActive: boolean;
+  isAdmin: boolean;
+  createdAt: Date;
+  lastLoginAt: Date | null;
+  failedLoginAttempts: number;
+}
+
+export interface UserDetails extends AdminUser {
+  trips: Trip[];
+  preferences?: UserPreferences;
+}
+
+export interface Trip {
+  id: string;
+  userId: string;
+  origin: Location;
+  destination: Location;
+  selectedRoute: RouteAlternative;
+  actualTransportationMode: string;
+  carbonSavings: number;
+  distance: number;
+  duration: number;
+  completedAt: Date;
+  createdAt: Date;
+}
+
+export interface AuditLog {
+  id: string;
+  adminId: string;
+  action: string;
+  targetUserId: string | null;
+  details: Record<string, any>;
+  timestamp: Date;
+  ipAddress: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}

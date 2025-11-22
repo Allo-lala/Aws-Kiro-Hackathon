@@ -4,3 +4,5 @@ export * from './ICarbonCalculator';
 export * from './IUserTracker';
 export * from './IRealtimeUpdater';
 export * from './IDataExportService';
+export * from './IAuthService';
+export * from './IAdminService';
