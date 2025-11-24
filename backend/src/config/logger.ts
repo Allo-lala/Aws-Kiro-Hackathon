@@ -40,23 +40,32 @@ const consoleFormat = winston.format.combine(
 );
 
 // Define which transports the logger must use
-const transports = [
+const transports: winston.transport[] = [
   // Console transport for all environments
   new winston.transports.Console({
     format: process.env.NODE_ENV === 'production' ? format : consoleFormat,
   }),
-  // File transport for errors
-  new winston.transports.File({
-    filename: path.join('logs', 'error.log'),
-    level: 'error',
-    format,
-  }),
-  // File transport for all logs
-  new winston.transports.File({
-    filename: path.join('logs', 'combined.log'),
-    format,
-  }),
 ];
+
+// Only add file transports in non-serverless environments
+// Vercel and other serverless platforms have read-only filesystems
+if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_FILE_LOGGING === 'true') {
+  const logDir = process.env.LOG_DIR || 'logs';
+  
+  transports.push(
+    // File transport for errors
+    new winston.transports.File({
+      filename: path.join(logDir, 'error.log'),
+      level: 'error',
+      format,
+    }),
+    // File transport for all logs
+    new winston.transports.File({
+      filename: path.join(logDir, 'combined.log'),
+      format,
+    })
+  );
+}
 
 // Create the logger
 const logger = winston.createLogger({
