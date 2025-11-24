@@ -5,7 +5,8 @@ export const adminService = {
   // Get system metrics
   getSystemMetrics: async (): Promise<SystemMetrics> => {
     const response = await apiClient.get('/admin/metrics');
-    return response.data;
+    // Backend might wrap response in a data object
+    return response.data.data || response.data;
   },
 
   // List all users with pagination and filters
@@ -21,13 +22,15 @@ export const adminService = {
       ...(filters?.isActive !== undefined && { isActive: filters.isActive.toString() })
     });
     const response = await apiClient.get(`/admin/users?${params}`);
-    return response.data;
+    // Backend might wrap response in a data object
+    return response.data.data || response.data;
   },
 
   // Get user details
   getUserDetails: async (userId: string): Promise<UserDetails> => {
     const response = await apiClient.get(`/admin/users/${userId}`);
-    return response.data;
+    // Backend might wrap response in a data object
+    return response.data.data || response.data;
   },
 
   // Disable user account
@@ -60,6 +63,7 @@ export const adminService = {
       ...(filters?.endDate && { endDate: filters.endDate.toISOString() })
     });
     const response = await apiClient.get(`/admin/audit-logs?${params}`);
-    return response.data;
+    // Backend might wrap response in a data object
+    return response.data.data || response.data;
   }
 };

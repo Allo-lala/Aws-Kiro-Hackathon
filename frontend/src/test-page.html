@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Test</title>
+</head>
+<body>
+    <h1>Testing React</h1>
+    <div id="root"></div>
+    
+    <script>
+        // Test if bundle.js loads
+        console.log('HTML loaded');
+        
+        window.addEventListener('error', function(e) {
+            document.body.innerHTML += '<div style="color: red; padding: 20px; background: #fee;">' +
+                '<h2>JavaScript Error:</h2>' +
+                '<pre>' + e.message + '\n' + e.filename + ':' + e.lineno + '</pre>' +
+                '</div>';
+        });
+    </script>
+    <script src="/bundle.js"></script>
+    <script>
+        setTimeout(function() {
+            const root = document.getElementById('root');
+            if (root.children.length === 0) {
+                document.body.innerHTML += '<div style="color: orange; padding: 20px; background: #ffc;">' +
+                    '<h2>React Not Mounted</h2>' +
+                    '<p>The bundle loaded but React did not render anything.</p>' +
+                    '<p>Check the browser console (F12) for errors.</p>' +
+                    '</div>';
+            } else {
+                document.body.innerHTML += '<div style="color: green; padding: 20px; background: #efe;">' +
+                    '<h2>Success!</h2>' +
+                    '<p>React is rendering correctly.</p>' +
+                    '</div>';
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

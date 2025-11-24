@@ -542,7 +542,7 @@ textarea:focus {
     scroll-behavior: auto;
   }
 }
-/
+
 * Route Planner Styles */
 .route-planner {
   padding: 2rem 0;
@@ -1295,6 +1295,7 @@ textarea:focus {
 .trip-history {
   max-width: 1000px;
   margin: 0 auto;
+  min-height: 60vh;
 }
 
 .trip-history-header {

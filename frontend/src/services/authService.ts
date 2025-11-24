@@ -74,8 +74,9 @@ export const authService = {
    * Login with email and password
    */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data);
-    return response.data;
+    const response = await apiClient.post<{ success: boolean; message: string; data: LoginResponse }>('/auth/login', data);
+    // Backend wraps response in a data object
+    return response.data.data;
   },
 
   /**

@@ -103,7 +103,7 @@ export const AuditLogViewer: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {logs.data.map((log) => (
+            {(Array.isArray(logs.data) ? logs.data : []).map((log) => (
               <tr key={log.id}>
                 <td>{new Date(log.timestamp).toLocaleString()}</td>
                 <td>

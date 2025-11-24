@@ -74,6 +74,15 @@ export const Dashboard: React.FC = () => {
               >
                 ⚙️ Profile
               </button>
+              {user?.isAdmin && (
+                <button
+                  className="tab-button"
+                  onClick={() => navigate('/admin')}
+                  style={{ backgroundColor: '#dc2626', color: 'white' }}
+                >
+                  👑 Admin Panel
+                </button>
+              )}
             </div>
 
             <div className="dashboard-content">
@@ -106,7 +115,7 @@ export const Dashboard: React.FC = () => {
 
       <footer className="footer" role="contentinfo">
         <div className="container">
-          <p>&copy; 2024 Rutty - Your Green Journey Companion. Making travel sustainable, one route at a time.</p>
+          <p>&copy; 2025 Rutty - Your Green Journey Companion. Making travel sustainable.</p>
         </div>
       </footer>
     </div>

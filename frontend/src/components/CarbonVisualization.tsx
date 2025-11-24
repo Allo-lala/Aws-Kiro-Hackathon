@@ -32,7 +32,9 @@ export const CarbonVisualization: React.FC = () => {
       
       // Load stats
       const statsResponse = await apiClient.get('/users/me/stats');
-      setStats(statsResponse.data);
+      // Backend might wrap response in a data object
+      const statsData = statsResponse.data.data || statsResponse.data;
+      setStats(statsData);
 
       // Load trips for chart
       const params: any = { limit: 100 };
@@ -51,9 +53,13 @@ export const CarbonVisualization: React.FC = () => {
       }
 
       const tripsResponse = await apiClient.get('/users/me/trips', { params });
-      setTrips(tripsResponse.data);
+      // Backend might wrap response in a data object
+      const tripsData = Array.isArray(tripsResponse.data) ? tripsResponse.data : (tripsResponse.data.data || []);
+      setTrips(tripsData);
     } catch (error) {
       console.error('Error loading data:', error);
+      setStats(null);
+      setTrips([]);
     } finally {
       setLoading(false);
     }

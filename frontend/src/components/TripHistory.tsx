@@ -41,12 +41,14 @@ export const TripHistory: React.FC = () => {
       }
 
       const response = await apiClient.get('/users/me/trips', { params });
-      const newTrips = response.data;
+      // Backend might wrap response in a data object
+      const newTrips = Array.isArray(response.data) ? response.data : (response.data.data || []);
       
       setTrips(newTrips);
       setHasMore(newTrips.length === pageSize);
     } catch (error) {
       console.error('Error loading trips:', error);
+      setTrips([]); // Set empty array on error
     } finally {
       setLoading(false);
     }

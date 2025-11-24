@@ -93,6 +93,7 @@ export class AuthController {
             id: result.user.id,
             email: result.user.email,
             emailVerified: result.user.emailVerified,
+            isActive: result.user.isActive,
             isAdmin: result.user.isAdmin,
           },
           token: result.token,

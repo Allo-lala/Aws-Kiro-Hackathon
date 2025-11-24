@@ -92,7 +92,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onSelectUser }) 
             </tr>
           </thead>
           <tbody>
-            {users.data.map((user) => (
+            {(Array.isArray(users.data) ? users.data : []).map((user) => (
               <tr key={user.id}>
                 <td>{user.email}</td>
                 <td>
