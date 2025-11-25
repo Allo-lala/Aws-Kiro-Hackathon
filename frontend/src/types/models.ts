@@ -8,6 +8,23 @@ export interface Location {
   address?: string;
 }
 
+export interface PlaceSuggestion {
+  placeId: string;
+  name: string;
+  address: string;
+  city?: string;
+  state?: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  resultType: string;
+}
+
+export interface RecentLocation extends Location {
+  timestamp: number;
+  searchCount: number;
+}
+
 export interface TransportationMode {
   type: string;
   subtype?: string;

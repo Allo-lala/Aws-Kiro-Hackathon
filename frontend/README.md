@@ -24,12 +24,33 @@ frontend/
 
 ## Getting Started
 
+### Prerequisites
+
+Before running the application, you'll need to obtain a free Geoapify API key for location autocomplete functionality:
+
+1. Visit [Geoapify](https://www.geoapify.com/)
+2. Sign up for a free account
+3. Navigate to your dashboard and create a new API key
+4. Copy the API key
+
 ### Installation
 
 ```bash
 cd frontend
 npm install
 ```
+
+### Configuration
+
+1. Copy the `.env.example` file to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Open `.env` and replace `your_api_key_here` with your actual Geoapify API key:
+   ```
+   REACT_APP_GEOAPIFY_API_KEY=your_actual_api_key_here
+   ```
 
 ### Development
 

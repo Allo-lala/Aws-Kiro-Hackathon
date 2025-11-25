@@ -6,8 +6,10 @@ export { authService } from './authService';
 export { userService } from './userService';
 export { routeService } from './routeService';
 export { adminService } from './adminService';
+export { geoapifyService, GeoapifyError } from './geoapifyService';
 
 // Export types
 export type { RegisterRequest, LoginRequest, LoginResponse } from './authService';
 export type { UserProfile, UpdateProfileRequest, UserStatistics, TripFilters } from './userService';
 export type { CalculateRoutesRequest, SaveTripRequest } from './routeService';
+export type { PlaceSuggestion, AutocompleteOptions } from './geoapifyService';

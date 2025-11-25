@@ -595,16 +595,21 @@ textarea:focus {
 .form-section {
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 1.5rem;
+  /* Ensure proper spacing for autocomplete dropdowns */
+  position: relative;
+  z-index: auto;
 }
 
 .form-section:last-of-type {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
 .form-section h3 {
   font-size: 1.125rem;
   color: #1f2937;
   margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .form-row {
@@ -700,6 +705,25 @@ textarea:focus {
   width: 100%;
   padding: 1rem;
   font-size: 1.125rem;
+  margin-top: 0.5rem;
+}
+
+/* Ensure autocomplete components have proper spacing in form */
+.form-section .location-autocomplete {
+  margin-bottom: 0;
+}
+
+/* Adjust z-index stacking for overlapping dropdowns */
+.form-section:nth-child(1) {
+  z-index: 30;
+}
+
+.form-section:nth-child(2) {
+  z-index: 20;
+}
+
+.form-section:nth-child(3) {
+  z-index: 10;
 }
 
 /* Loading State */
@@ -1134,6 +1158,7 @@ textarea:focus {
 
   .planner-sidebar {
     position: static;
+    max-width: 100%;
   }
 
   .chart-bar-row {
@@ -1142,6 +1167,18 @@ textarea:focus {
 }
 
 @media (max-width: 768px) {
+  .planner-sidebar {
+    padding: 1.5rem;
+  }
+
+  .route-input-form {
+    gap: 1.25rem;
+  }
+
+  .form-section {
+    padding-bottom: 1.25rem;
+  }
+
   .mode-selector {
     grid-template-columns: 1fr;
   }
@@ -1189,6 +1226,44 @@ textarea:focus {
   }
 
   .planner-header p {
+    font-size: 1rem;
+  }
+
+  .planner-sidebar {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .route-input-form {
+    gap: 1rem;
+  }
+
+  .form-section {
+    padding-bottom: 1rem;
+  }
+
+  .form-section h3 {
+    font-size: 1rem;
+  }
+
+  .form-hint {
+    font-size: 0.8125rem;
+  }
+
+  .mode-button {
+    padding: 0.875rem;
+  }
+
+  .mode-icon {
+    font-size: 1.75rem;
+  }
+
+  .mode-label {
+    font-size: 0.8125rem;
+  }
+
+  .btn-large {
+    padding: 0.875rem;
     font-size: 1rem;
   }
 

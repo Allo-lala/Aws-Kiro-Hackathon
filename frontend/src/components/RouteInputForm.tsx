@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Location } from '../types/models';
+import { LocationAutocomplete } from './LocationAutocomplete';
 
 export interface RouteInputFormProps {
   onSubmit: (origin: Location, destination: Location, modes: string[]) => void;
@@ -7,12 +8,8 @@ export interface RouteInputFormProps {
 }
 
 export const RouteInputForm: React.FC<RouteInputFormProps> = ({ onSubmit, loading = false }) => {
-  const [originLat, setOriginLat] = useState('');
-  const [originLng, setOriginLng] = useState('');
-  const [originName, setOriginName] = useState('');
-  const [destLat, setDestLat] = useState('');
-  const [destLng, setDestLng] = useState('');
-  const [destName, setDestName] = useState('');
+  const [origin, setOrigin] = useState<Location | null>(null);
+  const [destination, setDestination] = useState<Location | null>(null);
   const [selectedModes, setSelectedModes] = useState<string[]>(['walking', 'cycling', 'public_transit']);
 
   const transportModes = [
@@ -35,115 +32,40 @@ export const RouteInputForm: React.FC<RouteInputFormProps> = ({ onSubmit, loadin
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const origin: Location = {
-      latitude: parseFloat(originLat),
-      longitude: parseFloat(originLng),
-      name: originName || undefined,
-    };
-
-    const destination: Location = {
-      latitude: parseFloat(destLat),
-      longitude: parseFloat(destLng),
-      name: destName || undefined,
-    };
+    // Ensure both locations are selected
+    if (!origin || !destination) {
+      return;
+    }
 
     onSubmit(origin, destination, selectedModes);
   };
 
   const isFormValid = () => {
-    return originLat && originLng && destLat && destLng && selectedModes.length > 0;
+    return origin !== null && destination !== null && selectedModes.length > 0;
   };
 
   return (
     <form onSubmit={handleSubmit} className="route-input-form">
       <div className="form-section">
-        <h3>Origin</h3>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="origin-name">Location Name (Optional)</label>
-            <input
-              id="origin-name"
-              type="text"
-              value={originName}
-              onChange={(e) => setOriginName(e.target.value)}
-              placeholder="e.g., Home, Office"
-              disabled={loading}
-            />
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="origin-lat">Latitude *</label>
-            <input
-              id="origin-lat"
-              type="number"
-              step="any"
-              value={originLat}
-              onChange={(e) => setOriginLat(e.target.value)}
-              placeholder="e.g., 37.7749"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="origin-lng">Longitude *</label>
-            <input
-              id="origin-lng"
-              type="number"
-              step="any"
-              value={originLng}
-              onChange={(e) => setOriginLng(e.target.value)}
-              placeholder="e.g., -122.4194"
-              required
-              disabled={loading}
-            />
-          </div>
-        </div>
+        <LocationAutocomplete
+          label="Origin"
+          placeholder="Search for your starting location..."
+          value={origin}
+          onChange={setOrigin}
+          disabled={loading}
+          showCurrentLocation={true}
+        />
       </div>
 
       <div className="form-section">
-        <h3>Destination</h3>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="dest-name">Location Name (Optional)</label>
-            <input
-              id="dest-name"
-              type="text"
-              value={destName}
-              onChange={(e) => setDestName(e.target.value)}
-              placeholder="e.g., Park, Restaurant"
-              disabled={loading}
-            />
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="dest-lat">Latitude *</label>
-            <input
-              id="dest-lat"
-              type="number"
-              step="any"
-              value={destLat}
-              onChange={(e) => setDestLat(e.target.value)}
-              placeholder="e.g., 37.8044"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="dest-lng">Longitude *</label>
-            <input
-              id="dest-lng"
-              type="number"
-              step="any"
-              value={destLng}
-              onChange={(e) => setDestLng(e.target.value)}
-              placeholder="e.g., -122.2712"
-              required
-              disabled={loading}
-            />
-          </div>
-        </div>
+        <LocationAutocomplete
+          label="Destination"
+          placeholder="Search for your destination..."
+          value={destination}
+          onChange={setDestination}
+          disabled={loading}
+          showCurrentLocation={false}
+        />
       </div>
 
       <div className="form-section">

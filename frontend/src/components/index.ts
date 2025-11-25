@@ -17,3 +17,4 @@ export { SystemMetrics } from './SystemMetrics';
 export { UserManagement } from './UserManagement';
 export { UserDetailView } from './UserDetailView';
 export { AuditLogViewer } from './AuditLogViewer';
+export { LocationAutocomplete } from './LocationAutocomplete';
