@@ -25,6 +25,10 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   plugins: [
@@ -38,16 +42,17 @@ module.exports = {
       systemvars: true,
       defaults: false,
     }),
-    new webpack.DefinePlugin({
-      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || 'http://localhost:8080/api'),
-      'process.env.REACT_APP_GEOAPIFY_API_KEY': JSON.stringify(process.env.REACT_APP_GEOAPIFY_API_KEY || ''),
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    }),
   ],
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
+    static: [
+      {
+        directory: path.join(__dirname, 'dist'),
+      },
+      {
+        directory: path.join(__dirname, 'public'),
+        publicPath: '/',
+      },
+    ],
     port: 3000,
     open: true,
     hot: true,

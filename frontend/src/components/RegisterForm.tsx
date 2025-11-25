@@ -153,7 +153,7 @@ export const RegisterForm: React.FC = () => {
                 }}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? '👁️' : '😎'}
               </button>
             </div>
             <div className="form-help">
@@ -195,7 +195,7 @@ export const RegisterForm: React.FC = () => {
                 }}
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
-                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                {showConfirmPassword ? '👁️' : '😎'}
               </button>
             </div>
           </div>

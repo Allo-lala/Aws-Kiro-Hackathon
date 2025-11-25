@@ -134,7 +134,7 @@ export const CarbonVisualization: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon">🌍</div>
           <div className="stat-content">
-            <div className="stat-value">{stats.totalCarbonSavings.toFixed(1)} kg</div>
+            <div className="stat-value">{Number(stats.totalCarbonSavings || 0).toFixed(1)} kg</div>
             <div className="stat-label">Total CO₂ Saved</div>
           </div>
         </div>
@@ -142,7 +142,7 @@ export const CarbonVisualization: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon">🚶</div>
           <div className="stat-content">
-            <div className="stat-value">{stats.totalTrips}</div>
+            <div className="stat-value">{stats.totalTrips || 0}</div>
             <div className="stat-label">Total Trips</div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export const CarbonVisualization: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon">📏</div>
           <div className="stat-content">
-            <div className="stat-value">{stats.totalDistance.toFixed(1)} mi</div>
+            <div className="stat-value">{Number(stats.totalDistance || 0).toFixed(1)} mi</div>
             <div className="stat-label">Total Distance</div>
           </div>
         </div>
@@ -158,7 +158,7 @@ export const CarbonVisualization: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon">📊</div>
           <div className="stat-content">
-            <div className="stat-value">{stats.averageCarbonSavingsPerTrip.toFixed(2)} kg</div>
+            <div className="stat-value">{Number(stats.averageCarbonSavingsPerTrip || 0).toFixed(2)} kg</div>
             <div className="stat-label">Avg CO₂ per Trip</div>
           </div>
         </div>
@@ -200,7 +200,7 @@ export const CarbonVisualization: React.FC = () => {
                   />
                 </div>
                 <div className="milestone-status">
-                  {milestone.achieved ? '✓ Achieved' : `${milestone.progress.toFixed(0)}%`}
+                  {milestone.achieved ? '✓ Achieved' : `${Number(milestone.progress || 0).toFixed(0)}%`}
                 </div>
               </div>
             </div>
@@ -251,7 +251,7 @@ export const CarbonVisualization: React.FC = () => {
                   />
                 </div>
                 <div className="mode-savings">
-                  {item.savings.toFixed(2)} kg CO₂ saved
+                  {Number(item.savings || 0).toFixed(2)} kg CO₂ saved
                 </div>
               </div>
             ))}
