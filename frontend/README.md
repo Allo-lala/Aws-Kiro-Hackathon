@@ -89,3 +89,9 @@ npm run test:watch
 The frontend communicates with the backend API at `http://localhost:8080/api` in development mode.
 
 Configure the API endpoint in production by updating the webpack proxy configuration.
+
+## Test users
+👤 Admin: admin@rutty.com / password123
+👤 User 1: user1@example.com / password123
+👤 User 2: user2@example.com / password123
+👤 Eco Warrior: eco.warrior@example.com / password123
