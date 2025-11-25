@@ -1,4 +1,9 @@
 import 'reflect-metadata';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
 import { createApp } from './app';
 import { DatabaseService } from './services/DatabaseService';
 import { RealRouteCalculationService, RealRouteCalculationConfig } from './services/RealRouteCalculationService';

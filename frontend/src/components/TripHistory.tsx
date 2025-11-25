@@ -147,19 +147,19 @@ export const TripHistory: React.FC = () => {
                   {trip.distance && (
                     <div className="stat">
                       <span className="stat-label">Distance:</span>
-                      <span className="stat-value">{trip.distance.toFixed(1)} mi</span>
+                      <span className="stat-value">{Number(trip.distance).toFixed(1)} mi</span>
                     </div>
                   )}
                   {trip.duration && (
                     <div className="stat">
                       <span className="stat-label">Duration:</span>
-                      <span className="stat-value">{Math.round(trip.duration)} min</span>
+                      <span className="stat-value">{Math.round(Number(trip.duration))} min</span>
                     </div>
                   )}
                   {trip.carbonSavings !== null && trip.carbonSavings !== undefined && (
                     <div className="stat carbon-savings">
                       <span className="stat-label">CO₂ Saved:</span>
-                      <span className="stat-value">{trip.carbonSavings.toFixed(2)} kg</span>
+                      <span className="stat-value">{Number(trip.carbonSavings).toFixed(2)} kg</span>
                     </div>
                   )}
                 </div>

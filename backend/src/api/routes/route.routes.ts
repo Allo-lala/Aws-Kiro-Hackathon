@@ -100,15 +100,64 @@ export function createRouteRouter(
           transportModes
         );
 
-        // Transform results to response format
-        const routes = Array.from(routeResults.entries()).map(([mode, response]) => ({
-          mode,
-          distance: response.distance,
-          duration: response.duration,
-          segments: response.segments,
-          polyline: response.polyline,
-          provider: response.provider,
-        }));
+        // Transform results to response format with carbon footprint calculations
+        const routes = Array.from(routeResults.entries()).map(([mode, response]) => {
+          // Calculate carbon emissions based on mode and distance
+          const emissionsPerMile: Record<string, number> = {
+            walking: 0,
+            cycling: 0,
+            public_transit: 0.14,
+            driving: 0.404,
+            rideshare: 0.404,
+            electric_vehicle: 0.12,
+            conventional_vehicle: 0.404,
+          };
+          
+          const emissionRate = emissionsPerMile[mode] || 0.404;
+          const totalEmissions = response.distance * emissionRate;
+          
+          return {
+            id: `${mode}-${Date.now()}`,
+            origin: originLocation,
+            destination: destinationLocation,
+            distance: response.distance,
+            duration: response.duration,
+            transportationModes: [{
+              type: mode,
+              name: mode.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              carbonEmissionRate: emissionRate,
+              isEcoFriendly: emissionRate < 0.2,
+            }],
+            carbonFootprint: {
+              totalEmissions,
+              emissionsPerMile: emissionRate,
+              comparisonToAverage: totalEmissions - (response.distance * 0.404),
+              ecoScore: Math.max(0, 100 - (totalEmissions * 10)),
+            },
+            segments: response.segments.map((seg, idx) => ({
+              id: `seg-${idx}`,
+              startLocation: {
+                latitude: seg.startLat,
+                longitude: seg.startLng,
+              },
+              endLocation: {
+                latitude: seg.endLat,
+                longitude: seg.endLng,
+              },
+              distance: seg.distance,
+              duration: seg.duration,
+              instructions: seg.instructions || '',
+              transportationMode: {
+                type: mode,
+                name: mode.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                carbonEmissionRate: emissionRate,
+                isEcoFriendly: emissionRate < 0.2,
+              },
+            })),
+            polyline: response.polyline,
+            provider: response.provider,
+          };
+        });
 
         res.json({
           success: true,

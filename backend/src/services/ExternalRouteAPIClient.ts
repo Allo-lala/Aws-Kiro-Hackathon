@@ -103,7 +103,8 @@ export class ExternalRouteAPIClient {
       waypoints: `${request.origin.latitude},${request.origin.longitude}|${request.destination.latitude},${request.destination.longitude}`,
       mode: mode,
       apiKey: this.config.apiKey,
-      units: 'imperial' // Use miles
+      units: 'imperial', // Use miles
+      details: 'instruction_details' // Request detailed step-by-step instructions
     };
 
     const response = await this.client.get(url, { params });
@@ -111,6 +112,19 @@ export class ExternalRouteAPIClient {
     if (!response.data.features || response.data.features.length === 0) {
       throw new Error('Geoapify API returned no routes');
     }
+
+    // Debug logging to understand the response structure
+    const feature = response.data.features[0];
+    console.log('Geoapify feature properties:', JSON.stringify({
+      mode: feature.properties.mode,
+      distance: feature.properties.distance,
+      time: feature.properties.time,
+      hasLegs: !!feature.properties.legs,
+      legsCount: feature.properties.legs?.length,
+      hasSteps: !!feature.properties.legs?.[0]?.steps,
+      stepsCount: feature.properties.legs?.[0]?.steps?.length,
+      firstStep: feature.properties.legs?.[0]?.steps?.[0]
+    }, null, 2));
 
     return this.parseGeoapifyResponse(response.data);
   }
@@ -142,19 +156,65 @@ export class ExternalRouteAPIClient {
     const feature = data.features[0];
     const properties = feature.properties;
 
-    const segments: RouteSegmentData[] = properties.legs[0].steps.map((step: any) => ({
-      startLat: step.from[1],
-      startLng: step.from[0],
-      endLat: step.to[1],
-      endLng: step.to[0],
-      distance: step.distance * 0.000621371, // Convert meters to miles
-      duration: step.time / 60, // Convert seconds to minutes
-      instructions: step.instruction?.text
-    }));
+    // Parse segments with better error handling
+    const segments: RouteSegmentData[] = [];
+    
+    if (properties.legs && properties.legs[0] && properties.legs[0].steps) {
+      for (const step of properties.legs[0].steps) {
+        // Geoapify uses different coordinate formats depending on the response
+        // Try to extract coordinates safely
+        let startLat, startLng, endLat, endLng;
+        
+        if (Array.isArray(step.from) && step.from.length >= 2) {
+          startLng = step.from[0];
+          startLat = step.from[1];
+        } else if (step.from_location) {
+          startLat = step.from_location.lat || step.from_location[1];
+          startLng = step.from_location.lng || step.from_location[0];
+        }
+        
+        if (Array.isArray(step.to) && step.to.length >= 2) {
+          endLng = step.to[0];
+          endLat = step.to[1];
+        } else if (step.to_location) {
+          endLat = step.to_location.lat || step.to_location[1];
+          endLng = step.to_location.lng || step.to_location[0];
+        }
+        
+        // Only add segment if we have valid coordinates
+        if (startLat && startLng && endLat && endLng) {
+          segments.push({
+            startLat,
+            startLng,
+            endLat,
+            endLng,
+            distance: (step.distance || 0) * 0.000621371, // Convert meters to miles
+            duration: (step.time || 0) / 60, // Convert seconds to minutes
+            instructions: step.instruction?.text || step.instruction || ''
+          });
+        }
+      }
+    }
+    
+    // If no segments were parsed, create a basic segment from waypoints
+    if (segments.length === 0 && properties.waypoints && properties.waypoints.length >= 2) {
+      const origin = properties.waypoints[0].location;
+      const destination = properties.waypoints[properties.waypoints.length - 1].location;
+      
+      segments.push({
+        startLat: origin[0],
+        startLng: origin[1],
+        endLat: destination[0],
+        endLng: destination[1],
+        distance: properties.distance || 0,
+        duration: (properties.time || 0) / 60,
+        instructions: `Travel from origin to destination via ${properties.mode}`
+      });
+    }
 
     return {
-      distance: properties.distance * 0.000621371, // Convert meters to miles
-      duration: properties.time / 60, // Convert seconds to minutes
+      distance: properties.distance || 0,
+      duration: (properties.time || 0) / 60,
       segments,
       polyline: feature.geometry?.coordinates,
       provider: 'geoapify'
