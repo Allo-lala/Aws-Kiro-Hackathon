@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rutty.app/schemas/deployment-config.json",
+  "title": "Rutty Deployment Configuration",
+  "description": "Schema for Rutty application deployment configuration file defining environment-specific settings for database initialization, deployment verification, and Vercel environment setup",
+  "type": "object",
+  "required": ["environments"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "_comment": {
+      "type": "string",
+      "description": "Optional comment field for documentation"
+    },
+    "_description": {
+      "type": "string",
+      "description": "Optional description field for documentation"
+    },
+    "_usage": {
+      "type": "object",
+      "description": "Usage examples for the configuration file"
+    },
+    "_documentation": {
+      "type": "object",
+      "description": "Comprehensive documentation about the configuration file format"
+    },
+    "environments": {
+      "type": "object",
+      "description": "Environment-specific configurations",
+      "minProperties": 1,
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "$ref": "#/definitions/environment"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "environment": {
+      "type": "object",
+      "description": "Configuration for a specific deployment environment",
+      "required": ["name", "databaseUrl", "apiBaseUrl", "environmentVariables"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Environment identifier (e.g., production, staging, development)",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the environment"
+        },
+        "databaseUrl": {
+          "type": "string",
+          "description": "PostgreSQL connection string (use pooled connection for Neon/Vercel)",
+          "pattern": "^postgresql://",
+          "examples": [
+            "postgresql://user:password@ep-xxx.region.aws.neon.tech/database?sslmode=require",
+            "postgresql://postgres:postgres@localhost:5432/rutty_dev"
+          ]
+        },
+        "apiBaseUrl": {
+          "type": "string",
+          "description": "Base URL for the backend API",
+          "format": "uri",
+          "examples": [
+            "https://api.rutty.app",
+            "http://localhost:8080"
+          ]
+        },
+        "frontendUrl": {
+          "type": "string",
+          "description": "Base URL for the frontend application",
+          "format": "uri",
+          "examples": [
+            "https://rutty.vercel.app",
+            "http://localhost:3000"
+          ]
+        },
+        "vercelProjectId": {
+          "type": "string",
+          "description": "Vercel project ID (required for automated Vercel deployments)",
+          "pattern": "^prj_[a-zA-Z0-9]+$",
+          "examples": ["prj_xxxxxxxxxxxxx"]
+        },
+        "vercelTeamId": {
+          "type": "string",
+          "description": "Vercel team ID (required for team accounts)",
+          "pattern": "^team_[a-zA-Z0-9]+$",
+          "examples": ["team_xxxxxxxxxxxxx"]
+        },
+        "environmentVariables": {
+          "type": "object",
+          "description": "Environment variables to be set for this environment",
+          "patternProperties": {
+            "^[A-Z_][A-Z0-9_]*$|^_comment_.*$|^REACT_APP_[A-Z_][A-Z0-9_]*$": {
+              "type": "string"
+            }
+          },
+          "properties": {
+            "PORT": {
+              "type": "string",
+              "description": "Server port number",
+              "pattern": "^[0-9]+$"
+            },
+            "NODE_ENV": {
+              "type": "string",
+              "description": "Node environment",
+              "enum": ["development", "staging", "production", "test"]
+            },
+            "DATABASE_URL": {
+              "type": "string",
+              "description": "PostgreSQL connection string",
+              "pattern": "^postgresql://"
+            },
+            "JWT_SECRET": {
+              "type": "string",
+              "description": "Secret key for JWT token signing (minimum 32 characters recommended)",
+              "minLength": 16
+            },
+            "JWT_EXPIRATION": {
+              "type": "string",
+              "description": "JWT token expiration time (e.g., 24h, 7d)",
+              "pattern": "^[0-9]+(s|m|h|d)$"
+            },
+            "BASE_URL": {
+              "type": "string",
+              "description": "Base URL of the application",
+              "format": "uri"
+            },
+            "GEOAPIFY_API_KEY": {
+              "type": "string",
+              "description": "Geoapify API key for location services"
+            },
+            "ROUTE_API_PROVIDER": {
+              "type": "string",
+              "description": "Route API provider name",
+              "enum": ["geoapify", "google_maps"]
+            },
+            "ROUTE_API_KEY": {
+              "type": "string",
+              "description": "API key for route calculation service"
+            },
+            "ALLOWED_ORIGINS": {
+              "type": "string",
+              "description": "Comma-separated list of allowed CORS origins"
+            },
+            "SENDGRID_API_KEY": {
+              "type": "string",
+              "description": "SendGrid API key for email functionality (optional)"
+            },
+            "EMAIL_FROM": {
+              "type": "string",
+              "description": "Sender email address",
+              "format": "email"
+            },
+            "REACT_APP_API_URL": {
+              "type": "string",
+              "description": "Frontend API URL",
+              "format": "uri"
+            },
+            "REACT_APP_GEOAPIFY_API_KEY": {
+              "type": "string",
+              "description": "Geoapify API key for frontend"
+            }
+          }
+        }
+      }
+    }
+  }
+}

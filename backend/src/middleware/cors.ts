@@ -8,7 +8,7 @@ export const configureCORS = (req: Request, res: Response, next: NextFunction): 
   // Get allowed origins from environment or use defaults
   const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-    : ['http://localhost:3000', 'http://localhost:8080'];
+    : ['http://localhost:3000', 'http://localhost:8080', 'https://rutty.vercel.app'];
 
   const origin = req.headers.origin;
 
@@ -20,8 +20,14 @@ export const configureCORS = (req: Request, res: Response, next: NextFunction): 
     // In development, allow all origins
     res.setHeader('Access-Control-Allow-Origin', '*');
   } else if (origin) {
-    // Log rejected origins in production for debugging
-    console.log(`CORS: Rejected origin: ${origin}. Allowed origins:`, allowedOrigins);
+    // In production, if origin not in list, still set CORS for Vercel deployments
+    // This handles preview deployments
+    if (origin.includes('.vercel.app')) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      console.log(`CORS: Rejected origin: ${origin}. Allowed origins:`, allowedOrigins);
+    }
   }
 
   // Allowed methods
@@ -33,12 +39,15 @@ export const configureCORS = (req: Request, res: Response, next: NextFunction): 
     'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-Token'
   );
 
+  // Expose headers that the frontend can access
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+
   // Max age for preflight cache
   res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
 
   // Preflight request handling
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    res.status(204).end();
     return;
   }
 

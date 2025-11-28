@@ -92,6 +92,9 @@ Configure the API endpoint in production by updating the webpack proxy configura
 
 ## Test users
 👤 Admin: admin@rutty.com / password123
+👤Admin: admin@example.com / AdminPassword123!
 👤 User 1: user1@example.com / password123
 👤 User 2: user2@example.com / password123
 👤 Eco Warrior: eco.warrior@example.com / password123
+👤User: test@example.com / TestPassword123!
+👤User: user@example.com / UserPassword123!

@@ -17,7 +17,13 @@
     "migration:run": "typeorm-ts-node-commonjs migration:run -d ormconfig.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d ormconfig.ts",
     "migration:show": "typeorm-ts-node-commonjs migration:show -d ormconfig.ts",
-    "db:setup": "ts-node src/scripts/setup-database.ts"
+    "db:setup": "ts-node src/scripts/setup-database.ts",
+    "db:init": "ts-node src/scripts/init-database.ts",
+    "db:seed": "ts-node src/scripts/seed-database.ts",
+    "db:verify": "ts-node src/scripts/verify-deployment.ts",
+    "deploy:check": "ts-node src/scripts/deployment-checklist.ts",
+    "deploy:health": "ts-node src/scripts/health-check.ts",
+    "vercel:setup-env": "ts-node src/scripts/setup-vercel-env.ts"
   },
   "keywords": [
     "eco-friendly",

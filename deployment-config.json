@@ -1,0 +1,219 @@
+{
+  "$schema": "./deployment-config.schema.json",
+  "_comment": "Deployment Configuration for Rutty Application",
+  "_description": "This file contains environment-specific configuration for database initialization, deployment verification, and Vercel environment setup. Each environment includes database connection details, API endpoints, and all required environment variables.",
+  "_usage": {
+    "initialization": "npm run db:init -- --env=production",
+    "verification": "npm run deploy:verify -- --env=production",
+    "vercel_setup": "npm run vercel:setup-env -- --env=production"
+  },
+  "environments": {
+    "production": {
+      "name": "production",
+      "description": "Production environment configuration for live deployment",
+      "databaseUrl": "postgresql://neondb_owner:npg_3sd1BnkixEJH@ep-late-bird-adwiv80k-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
+      "apiBaseUrl": "https://aws-kiro-hackathon-ijw4.vercel.app",
+      "frontendUrl": "https://rutty.vercel.app",
+      "vercelProjectId": "prj_mCIoQOuRiu434RGc12PmgGWkgteA",
+      "environmentVariables": {
+        "_comment_server": "Server Configuration",
+        "PORT": "8080",
+        "NODE_ENV": "production",
+        
+        "_comment_database": "Database Configuration - Use Neon pooled connection URL",
+        "DATABASE_URL": "postgresql://neondb_owner:npg_3sd1BnkixEJH@ep-late-bird-adwiv80k-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
+        "DB_LOGGING": "false",
+        "DB_POOL_MAX": "20",
+        "DB_POOL_MIN": "5",
+        "DB_IDLE_TIMEOUT": "30000",
+        "DB_CONNECTION_TIMEOUT": "10000",
+        
+        "_comment_jwt": "JWT Authentication Configuration",
+        "JWT_SECRET": "a13e170856cc6e0623ae657b7cc8748f",
+        "JWT_EXPIRATION": "24h",
+        
+        "_comment_api": "External API Configuration",
+        "ROUTE_API_PROVIDER": "geoapify",
+        "ROUTE_API_KEY": "1b98641552864bc788a642b33d1be30d",
+        "GEOAPIFY_API_KEY": "1b98641552864bc788a642b33d1be30d",
+        "ROUTE_API_TIMEOUT": "5000",
+        "ROUTE_API_MAX_RETRIES": "3",
+        "ROUTE_CACHE_ENABLED": "true",
+        "ROUTE_CACHE_TTL_MINUTES": "60",
+        
+        "_comment_email": "Email Service Configuration (Optional - for email verification)",
+        "SENDGRID_API_KEY": "",
+        "EMAIL_FROM": "noreply@rutty.app",
+        
+        "_comment_urls": "Application URLs",
+        "BASE_URL": "https://aws-kiro-hackathon-ijw4.vercel.app",
+        
+        "_comment_cors": "CORS Configuration - Comma-separated allowed origins",
+        "ALLOWED_ORIGINS": "https://rutty.vercel.app,https://aws-kiro-hackathon-ijw4.vercel.app",
+        
+        "_comment_frontend": "Frontend Environment Variables",
+        "REACT_APP_API_URL": "https://aws-kiro-hackathon-ijw4.vercel.app/api",
+        "REACT_APP_GEOAPIFY_API_KEY": "1b98641552864bc788a642b33d1be30d"
+      }
+    },
+    "staging": {
+      "name": "staging",
+      "description": "Staging environment for pre-production testing",
+      "databaseUrl": "postgresql://user:password@ep-xxx.region.aws.neon.tech/rutty_staging?sslmode=require",
+      "apiBaseUrl": "https://staging-rutty.vercel.app",
+      "frontendUrl": "https://staging-rutty-frontend.vercel.app",
+      "vercelProjectId": "prj_mCIoQOuRiu434RGc12PmgGWkgteA",
+      "vercelTeamId": "team_xxxxxxxxxxxxx",
+      "environmentVariables": {
+        "_comment_server": "Server Configuration",
+        "PORT": "8080",
+        "NODE_ENV": "staging",
+        
+        "_comment_database": "Database Configuration - Use Neon pooled connection URL",
+        "DATABASE_URL": "postgresql://user:password@ep-xxx.region.aws.neon.tech/rutty_staging?sslmode=require",
+        "DB_LOGGING": "true",
+        "DB_POOL_MAX": "10",
+        "DB_POOL_MIN": "2",
+        "DB_IDLE_TIMEOUT": "30000",
+        "DB_CONNECTION_TIMEOUT": "10000",
+        
+        "_comment_jwt": "JWT Authentication Configuration",
+        "JWT_SECRET": "your-staging-jwt-secret-change-this",
+        "JWT_EXPIRATION": "24h",
+        
+        "_comment_api": "External API Configuration",
+        "ROUTE_API_PROVIDER": "geoapify",
+        "ROUTE_API_KEY": "your-geoapify-api-key-here",
+        "GEOAPIFY_API_KEY": "your-geoapify-api-key-here",
+        "ROUTE_API_TIMEOUT": "5000",
+        "ROUTE_API_MAX_RETRIES": "3",
+        "ROUTE_CACHE_ENABLED": "true",
+        "ROUTE_CACHE_TTL_MINUTES": "30",
+        
+        "_comment_email": "Email Service Configuration",
+        "SENDGRID_API_KEY": "your-sendgrid-api-key-or-leave-empty",
+        "EMAIL_FROM": "staging@rutty.app",
+        
+        "_comment_urls": "Application URLs",
+        "BASE_URL": "https://staging-rutty.vercel.app",
+        
+        "_comment_cors": "CORS Configuration",
+        "ALLOWED_ORIGINS": "https://staging-rutty-frontend.vercel.app,https://staging-rutty.vercel.app",
+        
+        "_comment_frontend": "Frontend Environment Variables",
+        "REACT_APP_API_URL": "https://staging-rutty.vercel.app/api",
+        "REACT_APP_GEOAPIFY_API_KEY": "your-geoapify-api-key-here"
+      }
+    },
+    "development": {
+      "name": "development",
+      "description": "Local development environment configuration",
+      "databaseUrl": "postgresql://postgres:postgres@localhost:5432/rutty_dev",
+      "apiBaseUrl": "http://localhost:8080",
+      "frontendUrl": "http://localhost:3000",
+      "environmentVariables": {
+        "_comment_server": "Server Configuration",
+        "PORT": "8080",
+        "NODE_ENV": "development",
+        
+        "_comment_database": "Database Configuration - Local PostgreSQL",
+        "DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/rutty_dev",
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_USERNAME": "postgres",
+        "DB_PASSWORD": "postgres",
+        "DB_NAME": "rutty_dev",
+        "DB_LOGGING": "true",
+        "DB_POOL_MAX": "10",
+        "DB_POOL_MIN": "2",
+        "DB_IDLE_TIMEOUT": "30000",
+        "DB_CONNECTION_TIMEOUT": "10000",
+        
+        "_comment_jwt": "JWT Authentication Configuration",
+        "JWT_SECRET": "dev-jwt-secret-not-for-production",
+        "JWT_EXPIRATION": "24h",
+        
+        "_comment_api": "External API Configuration",
+        "ROUTE_API_PROVIDER": "geoapify",
+        "ROUTE_API_KEY": "1b98641552864bc788a642b33d1be30d",
+        "GEOAPIFY_API_KEY": "1b98641552864bc788a642b33d1be30d",
+        "ROUTE_API_TIMEOUT": "5000",
+        "ROUTE_API_MAX_RETRIES": "3",
+        "ROUTE_CACHE_ENABLED": "true",
+        "ROUTE_CACHE_TTL_MINUTES": "60",
+        
+        "_comment_email": "Email Service Configuration (Optional for local dev)",
+        "EMAIL_FROM": "dev@rutty.app",
+        
+        "_comment_urls": "Application URLs",
+        "BASE_URL": "http://localhost:8080",
+        
+        "_comment_cors": "CORS Configuration",
+        "ALLOWED_ORIGINS": "http://localhost:3000,http://localhost:8080",
+        
+        "_comment_frontend": "Frontend Environment Variables",
+        "REACT_APP_API_URL": "http://localhost:8080/api",
+        "REACT_APP_GEOAPIFY_API_KEY": "1b98641552864bc788a642b33d1be30d"
+      }
+    }
+  },
+  "_documentation": {
+    "file_format": {
+      "description": "This JSON file defines environment-specific configurations for the Rutty application deployment workflow",
+      "structure": {
+        "environments": "Object containing configuration for each environment (production, staging, development)",
+        "environment_object": {
+          "name": "Environment identifier (string)",
+          "description": "Human-readable description of the environment",
+          "databaseUrl": "PostgreSQL connection string for the environment database",
+          "apiBaseUrl": "Base URL for the backend API",
+          "frontendUrl": "Base URL for the frontend application",
+          "vercelProjectId": "Vercel project ID (optional, only for cloud deployments)",
+          "vercelTeamId": "Vercel team ID (optional, for team accounts)",
+          "environmentVariables": "Object containing all environment variables as key-value pairs"
+        }
+      }
+    },
+    "required_variables": {
+      "critical": [
+        "DATABASE_URL - PostgreSQL connection string with SSL for cloud databases",
+        "JWT_SECRET - Secure random string for JWT token signing (minimum 32 characters)",
+        "BASE_URL - Base URL of the deployed application",
+        "GEOAPIFY_API_KEY - API key for Geoapify location services"
+      ],
+      "optional": [
+        "SENDGRID_API_KEY - SendGrid API key for email functionality",
+        "EMAIL_FROM - Sender email address for system emails",
+        "VERCEL_PROJECT_ID - Required only for automated Vercel deployments"
+      ]
+    },
+    "usage_examples": {
+      "database_initialization": "ts-node backend/src/scripts/init-database.ts --config=deployment-config.json --env=production",
+      "deployment_verification": "ts-node backend/src/scripts/verify-deployment.ts --config=deployment-config.json --env=production",
+      "vercel_env_setup": "ts-node backend/src/scripts/setup-vercel-env.ts --config=deployment-config.json --env=production",
+      "health_check": "ts-node backend/src/scripts/health-check.ts --config=deployment-config.json --env=production"
+    },
+    "security_notes": [
+      "NEVER commit actual secrets to version control",
+      "Replace all placeholder values (your-xxx-here) with actual values",
+      "Use different JWT_SECRET values for each environment",
+      "Ensure DATABASE_URL includes sslmode=require for cloud databases",
+      "Store actual secrets in Vercel environment variables or secure secret management",
+      "For production, generate JWT_SECRET using: openssl rand -base64 32"
+    ],
+    "neon_database_notes": [
+      "Neon provides two connection strings: pooled and direct",
+      "Use the POOLED connection string for serverless deployments (Vercel)",
+      "Pooled connection format: postgresql://user:pass@ep-xxx.region.aws.neon.tech/db?sslmode=require",
+      "Always include ?sslmode=require for Neon connections",
+      "Database URL can be found in Neon dashboard under Connection Details"
+    ],
+    "vercel_deployment_notes": [
+      "vercelProjectId can be found in Vercel project settings",
+      "vercelTeamId is only needed for team accounts",
+      "Environment variables can be set via Vercel CLI or dashboard",
+      "Use setup-vercel-env.ts script to automate variable configuration",
+      "Vercel automatically injects some variables (VERCEL_URL, etc.)"
+    ]
+  }
+}
