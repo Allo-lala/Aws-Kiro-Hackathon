@@ -84,7 +84,10 @@ export class RealRouteCalculationService {
         const response = await this.calculateRoute(origin, destination, mode);
         return { mode, response };
       } catch (error) {
-        console.warn(`Failed to calculate route for mode ${mode}:`, error);
+        console.error(`Failed to calculate route for mode ${mode}:`, error instanceof Error ? error.message : error);
+        if (error instanceof Error) {
+          console.error('Error stack:', error.stack);
+        }
         return { mode, response: null };
       }
     });

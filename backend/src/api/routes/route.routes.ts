@@ -100,6 +100,22 @@ export function createRouteRouter(
           transportModes
         );
 
+        // Check if we got any results
+        if (routeResults.size === 0) {
+          console.error('No routes calculated for any mode. Check API configuration and logs.');
+          res.status(503).json({
+            success: false,
+            error: 'Unable to calculate routes. Please check that ROUTE_API_PROVIDER and ROUTE_API_KEY are configured correctly.',
+            code: 'NO_ROUTES_CALCULATED',
+            debug: {
+              provider: process.env.ROUTE_API_PROVIDER,
+              hasApiKey: !!process.env.ROUTE_API_KEY,
+              requestedModes: transportModes
+            }
+          });
+          return;
+        }
+
         // Transform results to response format with carbon footprint calculations
         const routes = Array.from(routeResults.entries()).map(([mode, response]) => {
           // Calculate carbon emissions based on mode and distance
